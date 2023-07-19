@@ -75,69 +75,75 @@ static void oled_render_caps_state(void) {
         borderPad(lock_bottom_open, 3, 5);
         borderPad(lock_label_open, 3, 5);
     }
-    oled_write_P(border_bottom, false);
+    oled_write_P(border_section, false);
 }
 
 static void oled_render_layer_state(void) {
-    oled_write_P(border_top, false);
     borderPad("LYR", 3, 5);
     oled_write_P(border_section, false);
     char current_layer[] = {0x20, 0x30 + get_highest_layer(layer_state), 0};
     borderPad(current_layer, 2, 5);
+    oled_write_P(border_section, false);
+}
+
+static void oled_render_wpm(void) {
+    borderPad("WPM", 3, 5);
+    oled_write_P(border_section, false);
+    borderPad((char *) get_u8_str(get_current_wpm(), '0'), 3, 5);
     oled_write_P(border_bottom, false);
 }
 
-char     key_name = ' ';
-uint16_t last_keycode;
-uint8_t  last_row;
-uint8_t  last_col;
+// char     key_name = ' ';
+// uint16_t last_keycode;
+// uint8_t  last_row;
+// uint8_t  last_col;
+//
+// static const char PROGMEM code_to_name[60] = {' ', ' ', ' ', ' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'R', 'E', 'B', 'T', '_', '-', '=', '[', ']', '\\', '#', ';', '\'', '`', ',', '.', '/', ' ', ' ', ' '};
 
-static const char PROGMEM code_to_name[60] = {' ', ' ', ' ', ' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'R', 'E', 'B', 'T', '_', '-', '=', '[', ']', '\\', '#', ';', '\'', '`', ',', '.', '/', ' ', ' ', ' '};
+// static void set_keylog(uint16_t keycode, keyrecord_t *record) {
+//     key_name     = ' ';
+//     last_keycode = keycode;
+//     if (IS_QK_MOD_TAP(keycode)) {
+//         if (record->tap.count) {
+//             keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+//         } else {
+//             keycode = 0xE0 + biton(QK_MOD_TAP_GET_MODS(keycode) & 0xF) + biton(QK_MOD_TAP_GET_MODS(keycode) & 0x10);
+//         }
+//     } else if (IS_QK_LAYER_TAP(keycode) && record->tap.count) {
+//         keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
+//     } else if (IS_QK_MODS(keycode)) {
+//         keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
+//     } else if (IS_QK_ONE_SHOT_MOD(keycode)) {
+//         keycode = 0xE0 + biton(QK_ONE_SHOT_MOD_GET_MODS(keycode) & 0xF) + biton(QK_ONE_SHOT_MOD_GET_MODS(keycode) & 0x10);
+//     }
+//     if (keycode > ARRAY_SIZE(code_to_name)) {
+//         return;
+//     }
+//
+//     // update keylog
+//     key_name = pgm_read_byte(&code_to_name[keycode]);
+//     last_row = record->event.key.row;
+//     last_col = record->event.key.col;
+// }
 
-static void set_keylog(uint16_t keycode, keyrecord_t *record) {
-    key_name     = ' ';
-    last_keycode = keycode;
-    if (IS_QK_MOD_TAP(keycode)) {
-        if (record->tap.count) {
-            keycode = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
-        } else {
-            keycode = 0xE0 + biton(QK_MOD_TAP_GET_MODS(keycode) & 0xF) + biton(QK_MOD_TAP_GET_MODS(keycode) & 0x10);
-        }
-    } else if (IS_QK_LAYER_TAP(keycode) && record->tap.count) {
-        keycode = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
-    } else if (IS_QK_MODS(keycode)) {
-        keycode = QK_MODS_GET_BASIC_KEYCODE(keycode);
-    } else if (IS_QK_ONE_SHOT_MOD(keycode)) {
-        keycode = 0xE0 + biton(QK_ONE_SHOT_MOD_GET_MODS(keycode) & 0xF) + biton(QK_ONE_SHOT_MOD_GET_MODS(keycode) & 0x10);
-    }
-    if (keycode > ARRAY_SIZE(code_to_name)) {
-        return;
-    }
+// static const char *depad_str(const char *depad_str, char depad_char) {
+//     while (*depad_str == depad_char)
+//         ++depad_str;
+//     return depad_str;
+// }
 
-    // update keylog
-    key_name = pgm_read_byte(&code_to_name[keycode]);
-    last_row = record->event.key.row;
-    last_col = record->event.key.col;
-}
-
-static const char *depad_str(const char *depad_str, char depad_char) {
-    while (*depad_str == depad_char)
-        ++depad_str;
-    return depad_str;
-}
-
-static void oled_render_keylog(void) {
-    const char *last_row_str = get_u8_str(last_row, ' ');
-    oled_write(depad_str(last_row_str, ' '), false);
-    oled_write_P(PSTR("x"), false);
-    const char *last_col_str = get_u8_str(last_col, ' ');
-    oled_write(depad_str(last_col_str, ' '), false);
-    oled_write_P(PSTR(", k"), false);
-    const char *last_keycode_str = get_u16_str(last_keycode, ' ');
-    oled_write(depad_str(last_keycode_str, ' '), false);
-    oled_write_P(PSTR(":"), false);
-    oled_write_char(key_name, false);
-}
+// static void oled_render_keylog(void) {
+//     const char *last_row_str = get_u8_str(last_row, ' ');
+//     oled_write(depad_str(last_row_str, ' '), false);
+//     oled_write_P(PSTR("x"), false);
+//     const char *last_col_str = get_u8_str(last_col, ' ');
+//     oled_write(depad_str(last_col_str, ' '), false);
+//     oled_write_P(PSTR(", k"), false);
+//     const char *last_keycode_str = get_u16_str(last_keycode, ' ');
+//     oled_write(depad_str(last_keycode_str, ' '), false);
+//     oled_write_P(PSTR(":"), false);
+//     oled_write_char(key_name, false);
+// }
 
 // static void render_bootmagic_status(bool status) {
 //     /* Show Ctrl-Gui Swap options */
@@ -172,17 +178,17 @@ bool oled_task_kb(void) {
     if (is_keyboard_master()) {
         oled_render_caps_state();
         oled_render_layer_state();
-        oled_render_keylog();
+        oled_render_wpm();
     } else {
         oled_render_logo();
     }
     return false;
 }
 
-bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
-    if (record->event.pressed) {
-        set_keylog(keycode, record);
-    }
-    return process_record_user(keycode, record);
-}
+// bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
+//     if (record->event.pressed) {
+//         // set_keylog(keycode, record);
+//     }
+//     return process_record_user(keycode, record);
+// }
 #endif // OLED_ENABLE
