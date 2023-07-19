@@ -42,3 +42,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #define OLED_FONT_H "keyboards/crkbd/lib/glcdfont.c"
+
+/**
+ * because display will be rotated by 90 degrees,
+ * oled display width is 32 pixels,
+ * and font characters width are 6 pixels,
+ * 32 % 6 != 0,
+ * therefore padding is needed to center the characters
+ */
+#define OLED_COLUMN_OFFSET 1
