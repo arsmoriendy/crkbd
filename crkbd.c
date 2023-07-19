@@ -79,24 +79,12 @@ static void oled_render_caps_state(void) {
 }
 
 static void oled_render_layer_state(void) {
-    oled_write_P(PSTR("Layer: "), false);
-    switch (get_highest_layer(layer_state)) {
-        case 0:
-            oled_write_ln_P(PSTR("Default"), false);
-            break;
-        case 1:
-            oled_write_ln_P(PSTR("Lower"), false);
-            break;
-        case 2:
-            oled_write_ln_P(PSTR("Raise"), false);
-            break;
-        case 3:
-            oled_write_ln_P(PSTR("Adjust"), false);
-            break;
-        default:
-            oled_write_ln_P(PSTR("Undef"), false);
-            break;
-    }
+    oled_write_P(border_top, false);
+    borderPad("LYR", 3, 5);
+    oled_write_P(border_section, false);
+    char current_layer[] = {0x20, 0x30 + get_highest_layer(layer_state), 0};
+    borderPad(current_layer, 2, 5);
+    oled_write_P(border_bottom, false);
 }
 
 char     key_name = ' ';
