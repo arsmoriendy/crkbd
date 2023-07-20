@@ -50,4 +50,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 32 % 6 != 0,
  * therefore padding is needed to center the characters
  */
-#define OLED_COLUMN_OFFSET 1
+// #define OLED_COLUMN_OFFSET 1
