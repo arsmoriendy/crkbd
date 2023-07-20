@@ -21,8 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* Select hand configuration */
 
 // #define MASTER_LEFT
-#define MASTER_RIGHT
-// #define EE_HANDS
+// #define MASTER_RIGHT
+#define EE_HANDS
 
 #ifdef RGBLIGHT_ENABLE
     #define RGBLIGHT_EFFECT_BREATHING
@@ -51,3 +51,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * therefore padding is needed to center the characters
  */
 // #define OLED_COLUMN_OFFSET 1
+
+#define SPLIT_WPM_ENABLE

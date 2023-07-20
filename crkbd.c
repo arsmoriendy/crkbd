@@ -83,12 +83,13 @@ static void oled_render_layer_state(void) {
     oled_write_P(border_section, false);
 }
 
-// static void oled_render_wpm(void) {
-//     borderPad("WPM", 3, 5);
-//     oled_write_P(border_section, false);
-//     borderPad((char *) get_u8_str(get_current_wpm(), '0'), 3, 5);
-//     oled_write_P(border_bottom, false);
-// }
+static void oled_render_wpm(void) {
+    oled_write_P(border_top, false);
+    borderPad("WPM", 3, 5);
+    oled_write_P(border_section, false);
+    borderPad((char *) get_u8_str(get_current_wpm(), '0'), 3, 5);
+    oled_write_P(border_bottom, false);
+}
 
 // char     key_name = ' ';
 // uint16_t last_keycode;
@@ -177,6 +178,7 @@ bool oled_task_kb(void) {
         oled_render_keylog();
     } else {
         // oled_render_logo();
+        oled_render_wpm();
     }
     return false;
 }
