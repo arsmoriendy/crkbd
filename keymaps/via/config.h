@@ -52,4 +52,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 // #define OLED_COLUMN_OFFSET 1
 
-#define SPLIT_WPM_ENABLE
+// #define SPLIT_WPM_ENABLE
