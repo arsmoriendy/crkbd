@@ -52,4 +52,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 // #define OLED_COLUMN_OFFSET 1
 
+// #define SPLIT_TRANSPORT_MIRROR
+// #define SPLIT_ACTIVITY_ENABLE
+// #define SPLIT_OLED_ENABLE
+// #define SPLIT_MODS_ENABLE
+//
+#define SPLIT_LAYER_STATE_ENABLE
 #define SPLIT_WPM_ENABLE
