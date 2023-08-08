@@ -46,4 +46,5 @@
     #ifndef OLED_FONT_H
         #define OLED_FONT_H "keyboards/crkbd/lib/glcdfont.c"
     #endif
+    #define OLED_TIMEOUT 0
 #endif

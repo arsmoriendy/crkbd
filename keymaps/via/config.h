@@ -60,3 +60,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define SPLIT_LAYER_STATE_ENABLE
 #define SPLIT_WPM_ENABLE
 #define SPLIT_LED_STATE_ENABLE
+#define SPLIT_TRANSACTION_IDS_USER ALLOW_OLED_ON_SYNC
