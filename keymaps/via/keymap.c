@@ -137,18 +137,27 @@ static void oled_render_wpm(void) {
 int8_t last_row = -1;
 int8_t last_col = -1;
 
+void key_matrix_sync_slave_handler(uint8_t in_buflen, const void* in_data, uint8_t _out_buflen, void* _out_data) {
+    memcpy(&last_row, in_data, sizeof(int8_t));
+    memcpy(&last_col, ++in_data, sizeof(int8_t));
+}
+
 static void set_keylog(keyrecord_t *record) {
-    if (record->event.key.row >= 4) {
-        last_row = record->event.key.row - 4;
-        last_col = 124 - (record->event.key.col * 8 + 2);
+    if (record->event.key.row > 3) {
+        last_row = (record->event.key.row - 4) * 8;
+        last_col = 120 - (record->event.key.col * 8);
     } else {
-        last_row = record->event.key.row;
-        last_col = record->event.key.col * 8 + 2;
+        last_row = record->event.key.row * 8;
+        last_col = record->event.key.col * 8;
+    }
+    if (is_keyboard_master()) {
+        int8_t key_matrix[] = {last_row, last_col};
+        while (!transaction_rpc_send(KEY_MATRIX_SYNC, sizeof(key_matrix), &key_matrix));
     }
 }
 
 void oled_render_keylog(void) {
-    char crkbd_layout[] = { // 512
+    static const char PROGMEM crkbd_layout[] = { // 512
         // 'glyphs', 128x32px
         0xff, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0xff,
         0xff, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0xff,
@@ -216,14 +225,13 @@ void oled_render_keylog(void) {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     };
 
-    if (last_col != -1) {
-        for (int x = last_col; x < (last_col + 4); x++) {
-            crkbd_layout[(128 * last_row) + x] = 0xbd;
+    oled_write_raw_P(crkbd_layout, sizeof(crkbd_layout));
+    if (last_row != -1) {
+        for (int x = 0; x < 4; x++) {
+            for (int y = 0; y < 4; y++) {
+                oled_write_pixel(last_col + 2 + x, last_row + 2 + y, true);
+            }
         }
-    }
-
-    for (int i = 0; i < sizeof(crkbd_layout)/sizeof(crkbd_layout[0]); i++) {
-        oled_write_raw_byte(crkbd_layout[i], i);
     }
 }
 
@@ -235,10 +243,11 @@ void allow_oled_on_sync_slave_handler(uint8_t in_buflen, const void* in_data, ui
 
 void keyboard_post_init_user(void) {
     transaction_register_rpc(ALLOW_OLED_ON_SYNC, allow_oled_on_sync_slave_handler);
+    transaction_register_rpc(KEY_MATRIX_SYNC, key_matrix_sync_slave_handler);
 }
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-    return is_keyboard_master() ? rotation : OLED_ROTATION_270;
+    return is_keyboard_master() ? OLED_ROTATION_270 : rotation;
 }
 
 bool oled_task_user(void) {
@@ -248,11 +257,11 @@ bool oled_task_user(void) {
         return false;
     }
     if (is_keyboard_master()) {
-        oled_render_keylog();
-    } else {
         oled_render_caps_state();
         oled_render_layer_state();
         oled_render_wpm();
+    } else {
+        oled_render_keylog();
     }
     return false;
 }

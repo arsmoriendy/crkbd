@@ -56,8 +56,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #define SPLIT_ACTIVITY_ENABLE
 // #define SPLIT_OLED_ENABLE
 // #define SPLIT_MODS_ENABLE
-//
-#define SPLIT_LAYER_STATE_ENABLE
-#define SPLIT_WPM_ENABLE
-#define SPLIT_LED_STATE_ENABLE
-#define SPLIT_TRANSACTION_IDS_USER ALLOW_OLED_ON_SYNC
+#define SPLIT_TRANSACTION_IDS_USER ALLOW_OLED_ON_SYNC, KEY_MATRIX_SYNC
