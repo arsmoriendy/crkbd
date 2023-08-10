@@ -21,8 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* Select hand configuration */
 
 // #define MASTER_LEFT
-// #define MASTER_RIGHT
-#define EE_HANDS
+#define MASTER_RIGHT
+// #define EE_HANDS
+
+// disable support for Cherry MX Lock switches
+#undef LOCKING_SUPPORT_ENABLE
+#undef LOCKING_RESYNC_ENABLE
 
 #ifdef RGBLIGHT_ENABLE
     #define RGBLIGHT_EFFECT_BREATHING
@@ -39,6 +43,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     #define RGBLIGHT_HUE_STEP 10
     #define RGBLIGHT_SAT_STEP 17
     #define RGBLIGHT_VAL_STEP 17
+#endif
+
+#ifdef RGB_MATRIX_ENABLE
+#   define RGB_MATRIX_MAXIMUM_BRIGHTNESS 120 // limits maximum brightness of LEDs to 150 out of 255. Higher may cause the controller to crash.
+#   define RGB_MATRIX_HUE_STEP 10
+#   define RGB_MATRIX_SAT_STEP 17
+#   define RGB_MATRIX_VAL_STEP 17
+#   define RGB_MATRIX_SPD_STEP 10
+// - BUILT IN EFFECTS
+#   define ENABLE_RGB_MATRIX_CYCLE_OUT_IN_DUAL   // Full dual gradients scrolling out to in
+#   define ENABLE_RGB_MATRIX_CYCLE_SPIRAL        // Full gradient spinning spiral around center of keyboard
+#   define ENABLE_RGB_MATRIX_DUAL_BEACON         // Full gradient spinning around center of keyboard
+#   define ENABLE_RGB_MATRIX_RAINBOW_BEACON      // Full tighter gradient spinning around center of keyboard
+#   define ENABLE_RGB_MATRIX_RAINBOW_PINWHEELS   // Full dual gradients spinning two halfs of keyboard
+#   define ENABLE_RGB_MATRIX_PIXEL_FLOW          // Pulsing RGB flow along LED wiring with random hues
+// -- KEYPRESS EFFECTS
+#   define RGB_MATRIX_KEYPRESSES
+#   ifdef RGB_MATRIX_KEYPRESSES
+#       define ENABLE_RGB_MATRIX_SOLID_REACTIVE_SIMPLE   // Pulses keys hit to hue & value then fades value out
+#       define ENABLE_RGB_MATRIX_SOLID_REACTIVE      // Static single hue, pulses keys hit to shifted hue then fades to current hue
+#       define ENABLE_RGB_MATRIX_SOLID_REACTIVE_MULTIWIDE  // Hue & value pulse near multiple key hits then fades value out
+#       define ENABLE_RGB_MATRIX_SOLID_REACTIVE_MULTICROSS // Hue & value pulse the same column and row of multiple key hits then fades value out
+#       define ENABLE_RGB_MATRIX_SOLID_REACTIVE_MULTINEXUS // Hue & value pulse away on the same column and row of multiple key hits then fades value out
+#       define ENABLE_RGB_MATRIX_MULTISPLASH         // Full gradient & value pulse away from multiple key hits then fades value out
+#       define ENABLE_RGB_MATRIX_SOLID_MULTISPLASH   // Hue & value pulse away from multiple key hits then fades value out
+#   endif
 #endif
 
 #define OLED_FONT_H "keyboards/crkbd/lib/glcdfont.c"
